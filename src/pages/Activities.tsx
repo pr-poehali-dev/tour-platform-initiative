@@ -196,179 +196,208 @@ const Activities = () => {
             </TabsList>
 
             <TabsContent value="excursions">
-              <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                <Card className="lg:col-span-1 h-fit animate-fade-in">
-                  <CardHeader>
-                    <CardTitle className="text-lg">Фильтры</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div>
-                      <Label className="text-base font-semibold mb-3 block">Категория</Label>
-                      <div className="space-y-3">
-                        {excursionCategories.map(cat => (
-                          <div key={cat.id} className="flex items-center space-x-2">
-                            <Checkbox
-                              id={`cat-${cat.id}`}
-                              checked={selectedCategories.includes(cat.id)}
-                              onCheckedChange={(checked) => handleCategoryChange(cat.id, checked as boolean)}
-                            />
-                            <label htmlFor={`cat-${cat.id}`} className="text-sm font-medium cursor-pointer">
-                              {cat.label}
-                            </label>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <Label className="text-base font-semibold mb-3 block">Время начала</Label>
-                      <div className="space-y-3">
-                        {timeSlots.map(slot => (
-                          <div key={slot.id} className="flex items-center space-x-2">
-                            <Checkbox
-                              id={`time-${slot.id}`}
-                              checked={selectedTime.includes(slot.id)}
-                              onCheckedChange={(checked) => handleTimeChange(slot.id, checked as boolean)}
-                            />
-                            <label htmlFor={`time-${slot.id}`} className="text-sm font-medium cursor-pointer">
-                              {slot.label}
-                            </label>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <div className="lg:col-span-3">
-                  <div className="mb-6">
-                    <p className="text-sm text-muted-foreground">
-                      Найдено экскурсий: {filteredExcursions.length}
-                    </p>
+              <div className="mb-6 space-y-4">
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <Label className="text-sm font-semibold flex items-center gap-2">
+                      <Icon name="Tag" size={16} />
+                      Категория
+                    </Label>
+                    {selectedCategories.length > 0 && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setSelectedCategories([])}
+                        className="h-7 text-xs"
+                      >
+                        Очистить
+                      </Button>
+                    )}
                   </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {filteredExcursions.map(exc => (
-                      <Card key={exc.id} className="group hover:shadow-xl transition-all animate-fade-in cursor-pointer">
-                        <div className="relative overflow-hidden h-48">
-                          <img src={exc.image} alt={exc.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                          <div className="absolute top-3 right-3 flex gap-2">
-                            {exc.tags.map((tag, idx) => (
-                              <Badge key={idx} className="bg-white/90 text-primary">{tag}</Badge>
-                            ))}
-                          </div>
-                        </div>
-                        <CardHeader>
-                          <CardTitle className="text-lg">{exc.title}</CardTitle>
-                          <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                            <div className="flex items-center gap-1">
-                              <Icon name="Clock" size={14} />
-                              <span>{exc.duration}</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <Icon name="Star" className="text-yellow-500 fill-yellow-500" size={14} />
-                              <span>{exc.rating}</span>
-                            </div>
-                          </div>
-                        </CardHeader>
-                        <CardFooter className="flex items-center justify-between">
-                          <span className="text-xl font-bold text-primary">{exc.price}</span>
-                          <Button className="bg-accent hover:bg-accent/90">Забронировать</Button>
-                        </CardFooter>
-                      </Card>
+                  <div className="flex flex-wrap gap-2">
+                    {excursionCategories.map(cat => (
+                      <Badge
+                        key={cat.id}
+                        variant={selectedCategories.includes(cat.id) ? 'default' : 'outline'}
+                        className="cursor-pointer hover:shadow-md transition-all px-4 py-2"
+                        onClick={() => handleCategoryChange(cat.id, !selectedCategories.includes(cat.id))}
+                      >
+                        {cat.label}
+                      </Badge>
                     ))}
                   </div>
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <Label className="text-sm font-semibold flex items-center gap-2">
+                      <Icon name="Clock" size={16} />
+                      Время начала
+                    </Label>
+                    {selectedTime.length > 0 && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setSelectedTime([])}
+                        className="h-7 text-xs"
+                      >
+                        Очистить
+                      </Button>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {timeSlots.map(slot => (
+                      <Badge
+                        key={slot.id}
+                        variant={selectedTime.includes(slot.id) ? 'default' : 'outline'}
+                        className="cursor-pointer hover:shadow-md transition-all px-4 py-2"
+                        onClick={() => handleTimeChange(slot.id, !selectedTime.includes(slot.id))}
+                      >
+                        {slot.label}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div>
+
+                <div className="mb-6">
+                  <p className="text-sm text-muted-foreground">
+                    Найдено экскурсий: {filteredExcursions.length}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {filteredExcursions.map(exc => (
+                    <Card key={exc.id} className="group hover:shadow-xl transition-all animate-fade-in cursor-pointer">
+                      <div className="relative overflow-hidden h-48">
+                        <img src={exc.image} alt={exc.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                        <div className="absolute top-3 right-3 flex gap-2">
+                          {exc.tags.map((tag, idx) => (
+                            <Badge key={idx} className="bg-white/90 text-primary">{tag}</Badge>
+                          ))}
+                        </div>
+                      </div>
+                      <CardHeader>
+                        <CardTitle className="text-lg">{exc.title}</CardTitle>
+                        <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                          <div className="flex items-center gap-1">
+                            <Icon name="Clock" size={14} />
+                            <span>{exc.duration}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Icon name="Star" className="text-yellow-500 fill-yellow-500" size={14} />
+                            <span>{exc.rating}</span>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CardFooter className="flex items-center justify-between">
+                        <span className="text-xl font-bold text-primary">{exc.price}</span>
+                        <Button className="bg-accent hover:bg-accent/90">Забронировать</Button>
+                      </CardFooter>
+                    </Card>
+                  ))}
                 </div>
               </div>
             </TabsContent>
 
             <TabsContent value="events">
-              <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                <Card className="lg:col-span-1 h-fit animate-fade-in">
-                  <CardHeader>
-                    <CardTitle className="text-lg">Фильтры</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div>
-                      <Label className="text-base font-semibold mb-3 block">Тип события</Label>
-                      <div className="space-y-3">
-                        {eventTypes.map(type => (
-                          <div key={type.id} className="flex items-center space-x-2">
-                            <Checkbox
-                              id={`evt-${type.id}`}
-                              checked={selectedEventTypes.includes(type.id)}
-                              onCheckedChange={(checked) => handleEventTypeChange(type.id, checked as boolean)}
-                            />
-                            <label htmlFor={`evt-${type.id}`} className="text-sm font-medium cursor-pointer">
-                              {type.label}
-                            </label>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <Label className="text-base font-semibold mb-3 block">Быстрый выбор</Label>
-                      <div className="space-y-2">
-                        <Button variant="outline" className="w-full justify-start" size="sm">
-                          <Icon name="Calendar" className="mr-2" size={14} />
-                          Сегодня
-                        </Button>
-                        <Button variant="outline" className="w-full justify-start" size="sm">
-                          <Icon name="CalendarDays" className="mr-2" size={14} />
-                          Завтра
-                        </Button>
-                        <Button variant="outline" className="w-full justify-start" size="sm">
-                          <Icon name="CalendarRange" className="mr-2" size={14} />
-                          Выходные
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <div className="lg:col-span-3">
-                  <div className="mb-6">
-                    <p className="text-sm text-muted-foreground">
-                      Найдено мероприятий: {filteredEvents.length}
-                    </p>
+              <div className="mb-6 space-y-4">
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <Label className="text-sm font-semibold flex items-center gap-2">
+                      <Icon name="Tag" size={16} />
+                      Тип события
+                    </Label>
+                    {selectedEventTypes.length > 0 && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setSelectedEventTypes([])}
+                        className="h-7 text-xs"
+                      >
+                        Очистить
+                      </Button>
+                    )}
                   </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {filteredEvents.map(evt => (
-                      <Card key={evt.id} className="group hover:shadow-xl transition-all animate-fade-in cursor-pointer">
-                        <div className="relative overflow-hidden h-48">
-                          <img src={evt.image} alt={evt.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                          <div className="absolute top-3 right-3 flex gap-2">
-                            {evt.tags.map((tag, idx) => (
-                              <Badge key={idx} className="bg-white/90 text-primary">{tag}</Badge>
-                            ))}
-                          </div>
-                        </div>
-                        <CardHeader>
-                          <CardTitle className="text-lg">{evt.title}</CardTitle>
-                          <div className="space-y-1 text-sm text-muted-foreground">
-                            <div className="flex items-center gap-1">
-                              <Icon name="Calendar" size={14} />
-                              <span>{evt.date}</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <Icon name="MapPin" size={14} />
-                              <span>{evt.venue}</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <Icon name="Star" className="text-yellow-500 fill-yellow-500" size={14} />
-                              <span>{evt.rating} ({evt.reviews})</span>
-                            </div>
-                          </div>
-                        </CardHeader>
-                        <CardFooter className="flex items-center justify-between">
-                          <span className="text-xl font-bold text-primary">{evt.price}</span>
-                          <Button className="bg-accent hover:bg-accent/90">Купить билет</Button>
-                        </CardFooter>
-                      </Card>
+                  <div className="flex flex-wrap gap-2">
+                    {eventTypes.map(type => (
+                      <Badge
+                        key={type.id}
+                        variant={selectedEventTypes.includes(type.id) ? 'default' : 'outline'}
+                        className="cursor-pointer hover:shadow-md transition-all px-4 py-2"
+                        onClick={() => handleEventTypeChange(type.id, !selectedEventTypes.includes(type.id))}
+                      >
+                        {type.label}
+                      </Badge>
                     ))}
                   </div>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-semibold mb-3 block flex items-center gap-2">
+                    <Icon name="Calendar" size={16} />
+                    Быстрый выбор
+                  </Label>
+                  <div className="flex flex-wrap gap-2">
+                    <Button variant="outline" size="sm">
+                      <Icon name="Calendar" className="mr-2" size={14} />
+                      Сегодня
+                    </Button>
+                    <Button variant="outline" size="sm">
+                      <Icon name="CalendarDays" className="mr-2" size={14} />
+                      Завтра
+                    </Button>
+                    <Button variant="outline" size="sm">
+                      <Icon name="CalendarRange" className="mr-2" size={14} />
+                      Выходные
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div className="mb-6">
+                  <p className="text-sm text-muted-foreground">
+                    Найдено мероприятий: {filteredEvents.length}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {filteredEvents.map(evt => (
+                    <Card key={evt.id} className="group hover:shadow-xl transition-all animate-fade-in cursor-pointer">
+                      <div className="relative overflow-hidden h-48">
+                        <img src={evt.image} alt={evt.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                        <div className="absolute top-3 right-3 flex gap-2">
+                          {evt.tags.map((tag, idx) => (
+                            <Badge key={idx} className="bg-white/90 text-primary">{tag}</Badge>
+                          ))}
+                        </div>
+                      </div>
+                      <CardHeader>
+                        <CardTitle className="text-lg">{evt.title}</CardTitle>
+                        <div className="space-y-1 text-sm text-muted-foreground">
+                          <div className="flex items-center gap-1">
+                            <Icon name="Calendar" size={14} />
+                            <span>{evt.date}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Icon name="MapPin" size={14} />
+                            <span>{evt.venue}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Icon name="Star" className="text-yellow-500 fill-yellow-500" size={14} />
+                            <span>{evt.rating} ({evt.reviews})</span>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CardFooter className="flex items-center justify-between">
+                        <span className="text-xl font-bold text-primary">{evt.price}</span>
+                        <Button className="bg-accent hover:bg-accent/90">Купить билет</Button>
+                      </CardFooter>
+                    </Card>
+                  ))}
                 </div>
               </div>
             </TabsContent>

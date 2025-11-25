@@ -227,6 +227,8 @@ const Index = () => {
                 onClick={() => {
                   if (cat.id === 'go') {
                     navigate('/activities');
+                  } else if (cat.id === 'see') {
+                    navigate('/programs');
                   } else {
                     setActiveCategory(cat.id);
                   }
