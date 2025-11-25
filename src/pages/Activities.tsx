@@ -81,6 +81,7 @@ const Activities = () => {
       type: 'concert',
       date: 'Сегодня, 19:00',
       venue: 'Консерватория',
+      venueId: '1',
       price: '2 000 ₽',
       rating: 4.7,
       reviews: 89,
@@ -93,7 +94,8 @@ const Activities = () => {
       city: 'moscow',
       type: 'masterclass',
       date: 'Завтра, 15:00',
-      venue: 'Арт-студия Palette',
+      venue: 'Ресторан "Вкусная история"',
+      venueId: '1',
       price: '2 500 ₽',
       rating: 4.9,
       reviews: 124,
@@ -384,7 +386,15 @@ const Activities = () => {
                           </div>
                           <div className="flex items-center gap-1">
                             <Icon name="MapPin" size={14} />
-                            <span>{evt.venue}</span>
+                            <button 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/partner?id=${evt.venueId}`);
+                              }}
+                              className="hover:text-primary hover:underline transition-colors"
+                            >
+                              {evt.venue}
+                            </button>
                           </div>
                           <div className="flex items-center gap-1">
                             <Icon name="Star" className="text-yellow-500 fill-yellow-500" size={14} />

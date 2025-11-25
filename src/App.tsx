@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import TourDetails from "./pages/TourDetails";
 import Activities from "./pages/Activities";
 import Programs from "./pages/Programs";
+import PartnerProfile from "./pages/PartnerProfile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/tour" element={<TourDetails />} />
           <Route path="/activities" element={<Activities />} />
           <Route path="/programs" element={<Programs />} />
+          <Route path="/partner" element={<PartnerProfile />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
