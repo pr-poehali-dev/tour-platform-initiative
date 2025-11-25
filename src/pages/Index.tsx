@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -6,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
 
 const Index = () => {
+  const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState('all');
 
   const categories = [
@@ -198,7 +200,11 @@ const Index = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredTours.map((tour) => (
-              <Card key={tour.id} className="group overflow-hidden hover:shadow-2xl transition-all duration-300 animate-fade-in">
+              <Card 
+                key={tour.id} 
+                className="group overflow-hidden hover:shadow-2xl transition-all duration-300 animate-fade-in cursor-pointer"
+                onClick={() => navigate(`/tour?id=${tour.id}`)}
+              >
                 <div className="relative overflow-hidden h-56">
                   <img 
                     src={tour.image} 
@@ -245,7 +251,13 @@ const Index = () => {
                     <p className="text-sm text-muted-foreground">от</p>
                     <p className="text-2xl font-bold text-primary">{tour.price}</p>
                   </div>
-                  <Button className="bg-accent hover:bg-accent/90">
+                  <Button 
+                    className="bg-accent hover:bg-accent/90"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/tour?id=${tour.id}`);
+                    }}
+                  >
                     Забронировать
                   </Button>
                 </CardFooter>
