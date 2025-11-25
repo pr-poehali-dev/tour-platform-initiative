@@ -13,7 +13,9 @@ const Index = () => {
   const [filters, setFilters] = useState<FilterState>({
     priceRange: [0, 300000],
     categories: [],
-    duration: []
+    duration: [],
+    destinations: [],
+    difficulty: []
   });
 
   const categories = [
@@ -53,7 +55,9 @@ const Index = () => {
       rating: 4.9,
       reviews: 128,
       image: 'https://cdn.poehali.dev/projects/e8be52ed-259f-47b5-95b7-f713fabba9ea/files/f0f9bc31-c102-456f-9583-73a97aff3d83.jpg',
-      tags: ['Все включено', 'Пляжный отдых']
+      tags: ['Все включено', 'Пляжный отдых'],
+      destination: 'maldives',
+      difficulty: 'easy'
     },
     {
       id: 2,
@@ -67,7 +71,9 @@ const Index = () => {
       rating: 4.8,
       reviews: 94,
       image: 'https://cdn.poehali.dev/projects/e8be52ed-259f-47b5-95b7-f713fabba9ea/files/fede18a7-4d62-4ed8-9c98-22a3a83c41f1.jpg',
-      tags: ['Культура', 'Архитектура']
+      tags: ['Культура', 'Архитектура'],
+      destination: 'europe',
+      difficulty: 'easy'
     },
     {
       id: 3,
@@ -81,7 +87,9 @@ const Index = () => {
       rating: 4.7,
       reviews: 67,
       image: 'https://cdn.poehali.dev/projects/e8be52ed-259f-47b5-95b7-f713fabba9ea/files/8be0f182-aaab-426c-a285-bee2b4a0c00f.jpg',
-      tags: ['Активный отдых', 'Горы']
+      tags: ['Активный отдых', 'Горы'],
+      destination: 'mountains',
+      difficulty: 'hard'
     }
   ];
 
@@ -111,6 +119,14 @@ const Index = () => {
           return false;
         });
       });
+    }
+
+    if (filters.destinations.length > 0) {
+      result = result.filter(tour => filters.destinations.includes(tour.destination));
+    }
+
+    if (filters.difficulty.length > 0) {
+      result = result.filter(tour => filters.difficulty.includes(tour.difficulty));
     }
 
     return result;
@@ -208,7 +224,13 @@ const Index = () => {
               <Card 
                 key={cat.id}
                 className="group cursor-pointer border-2 hover:border-primary transition-all duration-300 hover:shadow-xl animate-scale-in"
-                onClick={() => setActiveCategory(cat.id)}
+                onClick={() => {
+                  if (cat.id === 'go') {
+                    navigate('/activities');
+                  } else {
+                    setActiveCategory(cat.id);
+                  }
+                }}
               >
                 <CardHeader>
                   <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${cat.gradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>

@@ -19,6 +19,8 @@ export interface FilterState {
   dateTo?: Date;
   categories: string[];
   duration: string[];
+  destinations: string[];
+  difficulty: string[];
 }
 
 const TourFilters = ({ onFilterChange }: TourFiltersProps) => {
@@ -27,6 +29,8 @@ const TourFilters = ({ onFilterChange }: TourFiltersProps) => {
   const [dateTo, setDateTo] = useState<Date>();
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedDuration, setSelectedDuration] = useState<string[]>([]);
+  const [selectedDestinations, setSelectedDestinations] = useState<string[]>([]);
+  const [selectedDifficulty, setSelectedDifficulty] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
 
   const categories = [
@@ -39,6 +43,20 @@ const TourFilters = ({ onFilterChange }: TourFiltersProps) => {
     { id: 'short', label: '1-3 дня' },
     { id: 'medium', label: '4-7 дней' },
     { id: 'long', label: '8+ дней' }
+  ];
+
+  const destinations = [
+    { id: 'maldives', label: 'Мальдивы' },
+    { id: 'europe', label: 'Европа' },
+    { id: 'asia', label: 'Азия' },
+    { id: 'mountains', label: 'Горы' },
+    { id: 'beach', label: 'Пляжный отдых' }
+  ];
+
+  const difficulties = [
+    { id: 'easy', label: 'Легкий' },
+    { id: 'medium', label: 'Средний' },
+    { id: 'hard', label: 'Сложный' }
   ];
 
   const handleCategoryChange = (categoryId: string, checked: boolean) => {
@@ -57,6 +75,22 @@ const TourFilters = ({ onFilterChange }: TourFiltersProps) => {
     applyFilters({ duration: newDuration });
   };
 
+  const handleDestinationChange = (destinationId: string, checked: boolean) => {
+    const newDestinations = checked
+      ? [...selectedDestinations, destinationId]
+      : selectedDestinations.filter(d => d !== destinationId);
+    setSelectedDestinations(newDestinations);
+    applyFilters({ destinations: newDestinations });
+  };
+
+  const handleDifficultyChange = (difficultyId: string, checked: boolean) => {
+    const newDifficulty = checked
+      ? [...selectedDifficulty, difficultyId]
+      : selectedDifficulty.filter(d => d !== difficultyId);
+    setSelectedDifficulty(newDifficulty);
+    applyFilters({ difficulty: newDifficulty });
+  };
+
   const handlePriceChange = (value: number[]) => {
     const newRange: [number, number] = [value[0], value[1]];
     setPriceRange(newRange);
@@ -70,6 +104,8 @@ const TourFilters = ({ onFilterChange }: TourFiltersProps) => {
       dateTo,
       categories: selectedCategories,
       duration: selectedDuration,
+      destinations: selectedDestinations,
+      difficulty: selectedDifficulty,
       ...updates
     });
   };
@@ -80,10 +116,14 @@ const TourFilters = ({ onFilterChange }: TourFiltersProps) => {
     setDateTo(undefined);
     setSelectedCategories([]);
     setSelectedDuration([]);
+    setSelectedDestinations([]);
+    setSelectedDifficulty([]);
     onFilterChange({
       priceRange: [0, 300000],
       categories: [],
-      duration: []
+      duration: [],
+      destinations: [],
+      difficulty: []
     });
   };
 
@@ -173,6 +213,52 @@ const TourFilters = ({ onFilterChange }: TourFiltersProps) => {
                       className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
                     >
                       {duration.label}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <Label className="text-base font-semibold mb-3 block">Направление</Label>
+              <div className="space-y-3">
+                {destinations.map((destination) => (
+                  <div key={destination.id} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`dest-${destination.id}`}
+                      checked={selectedDestinations.includes(destination.id)}
+                      onCheckedChange={(checked) => 
+                        handleDestinationChange(destination.id, checked as boolean)
+                      }
+                    />
+                    <label
+                      htmlFor={`dest-${destination.id}`}
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                    >
+                      {destination.label}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <Label className="text-base font-semibold mb-3 block">Сложность</Label>
+              <div className="space-y-3">
+                {difficulties.map((difficulty) => (
+                  <div key={difficulty.id} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`diff-${difficulty.id}`}
+                      checked={selectedDifficulty.includes(difficulty.id)}
+                      onCheckedChange={(checked) => 
+                        handleDifficultyChange(difficulty.id, checked as boolean)
+                      }
+                    />
+                    <label
+                      htmlFor={`diff-${difficulty.id}`}
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                    >
+                      {difficulty.label}
                     </label>
                   </div>
                 ))}
