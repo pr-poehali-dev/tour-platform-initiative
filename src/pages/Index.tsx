@@ -1,14 +1,20 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
+import TourFilters, { FilterState } from '@/components/TourFilters';
 
 const Index = () => {
   const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState('all');
+  const [filters, setFilters] = useState<FilterState>({
+    priceRange: [0, 300000],
+    categories: [],
+    duration: []
+  });
 
   const categories = [
     {
@@ -41,7 +47,9 @@ const Index = () => {
       category: 'rest',
       location: 'Мальдивы',
       duration: '7 дней',
+      durationDays: 7,
       price: '125 000 ₽',
+      priceValue: 125000,
       rating: 4.9,
       reviews: 128,
       image: 'https://cdn.poehali.dev/projects/e8be52ed-259f-47b5-95b7-f713fabba9ea/files/f0f9bc31-c102-456f-9583-73a97aff3d83.jpg',
@@ -53,7 +61,9 @@ const Index = () => {
       category: 'see',
       location: 'Прага, Вена, Будапешт',
       duration: '10 дней',
+      durationDays: 10,
       price: '89 000 ₽',
+      priceValue: 89000,
       rating: 4.8,
       reviews: 94,
       image: 'https://cdn.poehali.dev/projects/e8be52ed-259f-47b5-95b7-f713fabba9ea/files/fede18a7-4d62-4ed8-9c98-22a3a83c41f1.jpg',
@@ -65,7 +75,9 @@ const Index = () => {
       category: 'go',
       location: 'Швейцария',
       duration: '5 дней',
+      durationDays: 5,
       price: '65 000 ₽',
+      priceValue: 65000,
       rating: 4.7,
       reviews: 67,
       image: 'https://cdn.poehali.dev/projects/e8be52ed-259f-47b5-95b7-f713fabba9ea/files/8be0f182-aaab-426c-a285-bee2b4a0c00f.jpg',
@@ -73,9 +85,36 @@ const Index = () => {
     }
   ];
 
-  const filteredTours = activeCategory === 'all' 
-    ? tours 
-    : tours.filter(tour => tour.category === activeCategory);
+  const filteredTours = useMemo(() => {
+    let result = tours;
+
+    if (activeCategory !== 'all') {
+      result = result.filter(tour => tour.category === activeCategory);
+    }
+
+    if (filters.categories.length > 0) {
+      result = result.filter(tour => filters.categories.includes(tour.category));
+    }
+
+    result = result.filter(tour => 
+      tour.priceValue >= filters.priceRange[0] && 
+      tour.priceValue <= filters.priceRange[1]
+    );
+
+    if (filters.duration.length > 0) {
+      result = result.filter(tour => {
+        const days = tour.durationDays;
+        return filters.duration.some(d => {
+          if (d === 'short') return days >= 1 && days <= 3;
+          if (d === 'medium') return days >= 4 && days <= 7;
+          if (d === 'long') return days >= 8;
+          return false;
+        });
+      });
+    }
+
+    return result;
+  }, [activeCategory, filters, tours]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-secondary/30">
@@ -184,22 +223,40 @@ const Index = () => {
             ))}
           </div>
 
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold">
-              {activeCategory === 'all' ? 'Все предложения' : categories.find(c => c.id === activeCategory)?.title}
-            </h2>
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => setActiveCategory('all')}
-              className={activeCategory === 'all' ? 'hidden' : ''}
-            >
-              Показать все
-            </Button>
-          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <div className="lg:col-span-1">
+              <TourFilters onFilterChange={setFilters} />
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredTours.map((tour) => (
+            <div className="lg:col-span-3">
+              <div className="flex items-center justify-between mb-8">
+                <div>
+                  <h2 className="text-2xl font-bold">
+                    {activeCategory === 'all' ? 'Все предложения' : categories.find(c => c.id === activeCategory)?.title}
+                  </h2>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Найдено туров: {filteredTours.length}
+                  </p>
+                </div>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setActiveCategory('all')}
+                  className={activeCategory === 'all' ? 'hidden' : ''}
+                >
+                  Показать все
+                </Button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {filteredTours.length === 0 ? (
+                  <div className="col-span-full text-center py-12">
+                    <Icon name="SearchX" size={48} className="mx-auto text-muted-foreground mb-4" />
+                    <h3 className="text-xl font-semibold mb-2">Туры не найдены</h3>
+                    <p className="text-muted-foreground">Попробуйте изменить параметры фильтра</p>
+                  </div>
+                ) : (
+                  filteredTours.map((tour) => (
               <Card 
                 key={tour.id} 
                 className="group overflow-hidden hover:shadow-2xl transition-all duration-300 animate-fade-in cursor-pointer"
@@ -262,7 +319,10 @@ const Index = () => {
                   </Button>
                 </CardFooter>
               </Card>
-            ))}
+                  ))
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </section>
