@@ -18,18 +18,38 @@ const Programs = () => {
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [selectedDurations, setSelectedDurations] = useState<string[]>([]);
   const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>([]);
-  const [showAllDestinations, setShowAllDestinations] = useState(false);
-  const [showAllTypes, setShowAllTypes] = useState(false);
+  
+  const [showRegionsSection, setShowRegionsSection] = useState(true);
+  const [showCountriesSection, setShowCountriesSection] = useState(false);
+  const [showTypesSection, setShowTypesSection] = useState(true);
+  const [showDetailsSection, setShowDetailsSection] = useState(false);
+  const [showPriceSection, setShowPriceSection] = useState(false);
 
-  const destinations = [
+  const regions = [
     { id: 'europe', label: 'Европа' },
     { id: 'asia', label: 'Азия' },
     { id: 'caucasus', label: 'Кавказ' },
-    { id: 'russia', label: 'Россия' },
     { id: 'middleeast', label: 'Ближний Восток' },
     { id: 'africa', label: 'Африка' },
     { id: 'southamerica', label: 'Южная Америка' },
     { id: 'northamerica', label: 'Северная Америка' }
+  ];
+
+  const countries = [
+    { id: 'russia', label: 'Россия' },
+    { id: 'italy', label: 'Италия' },
+    { id: 'spain', label: 'Испания' },
+    { id: 'france', label: 'Франция' },
+    { id: 'greece', label: 'Греция' },
+    { id: 'turkey', label: 'Турция' },
+    { id: 'thailand', label: 'Таиланд' },
+    { id: 'vietnam', label: 'Вьетнам' },
+    { id: 'japan', label: 'Япония' },
+    { id: 'china', label: 'Китай' },
+    { id: 'georgia', label: 'Грузия' },
+    { id: 'armenia', label: 'Армения' },
+    { id: 'egypt', label: 'Египет' },
+    { id: 'uae', label: 'ОАЭ' }
   ];
 
   const programTypes = [
@@ -141,8 +161,7 @@ const Programs = () => {
     setSelectedDifficulties([]);
   };
 
-  const visibleDestinations = showAllDestinations ? destinations : destinations.slice(0, 4);
-  const visibleTypes = showAllTypes ? programTypes : programTypes.slice(0, 3);
+
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-secondary/30">
@@ -175,187 +194,322 @@ const Programs = () => {
             </p>
           </div>
 
-          <div className="mb-8 space-y-6 animate-fade-in">
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <Label className="text-sm font-semibold flex items-center gap-2">
-                  <Icon name="MapPin" size={16} />
-                  Направление
-                </Label>
-                {selectedDestinations.length > 0 && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setSelectedDestinations([])}
-                    className="h-7 text-xs"
-                  >
-                    Очистить
-                  </Button>
-                )}
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {visibleDestinations.map(dest => (
-                  <Badge
-                    key={dest.id}
-                    variant={selectedDestinations.includes(dest.id) ? 'default' : 'outline'}
-                    className="cursor-pointer hover:shadow-md transition-all px-4 py-2"
-                    onClick={() => toggleDestination(dest.id)}
-                  >
-                    {dest.label}
-                  </Badge>
-                ))}
-                {destinations.length > 4 && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setShowAllDestinations(!showAllDestinations)}
-                    className="h-8"
-                  >
-                    {showAllDestinations ? (
-                      <>
-                        <Icon name="ChevronUp" size={14} className="mr-1" />
-                        Скрыть
-                      </>
-                    ) : (
-                      <>
-                        <Icon name="ChevronDown" size={14} className="mr-1" />
-                        Еще {destinations.length - 4}
-                      </>
+          <div className="mb-8 space-y-4 animate-fade-in">
+            <Card>
+              <CardHeader 
+                className="cursor-pointer hover:bg-secondary/50 transition-colors"
+                onClick={() => setShowRegionsSection(!showRegionsSection)}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Icon name="Globe" size={20} className="text-primary" />
+                    <CardTitle className="text-base">Регионы</CardTitle>
+                    {selectedDestinations.filter(d => regions.some(r => r.id === d)).length > 0 && (
+                      <Badge variant="secondary" className="ml-2">
+                        {selectedDestinations.filter(d => regions.some(r => r.id === d)).length}
+                      </Badge>
                     )}
-                  </Button>
-                )}
-              </div>
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <Label className="text-sm font-semibold flex items-center gap-2">
-                  <Icon name="Compass" size={16} />
-                  Тип программы
-                </Label>
-                {selectedTypes.length > 0 && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setSelectedTypes([])}
-                    className="h-7 text-xs"
-                  >
-                    Очистить
-                  </Button>
-                )}
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {visibleTypes.map(type => (
-                  <Badge
-                    key={type.id}
-                    variant={selectedTypes.includes(type.id) ? 'default' : 'outline'}
-                    className="cursor-pointer hover:shadow-md transition-all px-4 py-2"
-                    onClick={() => toggleType(type.id)}
-                  >
-                    {type.label}
-                  </Badge>
-                ))}
-                {programTypes.length > 3 && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setShowAllTypes(!showAllTypes)}
-                    className="h-8"
-                  >
-                    {showAllTypes ? (
-                      <>
-                        <Icon name="ChevronUp" size={14} className="mr-1" />
-                        Скрыть
-                      </>
-                    ) : (
-                      <>
-                        <Icon name="ChevronDown" size={14} className="mr-1" />
-                        Еще {programTypes.length - 3}
-                      </>
-                    )}
-                  </Button>
-                )}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div>
-                <Label className="text-sm font-semibold mb-3 block flex items-center gap-2">
-                  <Icon name="Clock" size={16} />
-                  Длительность
-                </Label>
-                <div className="flex flex-wrap gap-2">
-                  {durations.map(dur => (
-                    <Badge
-                      key={dur.id}
-                      variant={selectedDurations.includes(dur.id) ? 'default' : 'outline'}
-                      className="cursor-pointer hover:shadow-md transition-all"
-                      onClick={() => toggleDuration(dur.id)}
-                    >
-                      {dur.label}
-                    </Badge>
-                  ))}
+                  </div>
+                  <Icon 
+                    name={showRegionsSection ? "ChevronUp" : "ChevronDown"} 
+                    size={20} 
+                    className="text-muted-foreground"
+                  />
                 </div>
-              </div>
-
-              <div>
-                <Label className="text-sm font-semibold mb-3 block flex items-center gap-2">
-                  <Icon name="TrendingUp" size={16} />
-                  Сложность
-                </Label>
-                <div className="flex flex-wrap gap-2">
-                  {difficulties.map(diff => (
-                    <Badge
-                      key={diff.id}
-                      variant={selectedDifficulties.includes(diff.id) ? 'default' : 'outline'}
-                      className="cursor-pointer hover:shadow-md transition-all"
-                      onClick={() => toggleDifficulty(diff.id)}
+              </CardHeader>
+              {showRegionsSection && (
+                <CardContent>
+                  <div className="flex flex-wrap gap-2">
+                    {regions.map(region => (
+                      <Badge
+                        key={region.id}
+                        variant={selectedDestinations.includes(region.id) ? 'default' : 'outline'}
+                        className="cursor-pointer hover:shadow-md transition-all px-4 py-2"
+                        onClick={() => toggleDestination(region.id)}
+                      >
+                        {region.label}
+                      </Badge>
+                    ))}
+                  </div>
+                  {selectedDestinations.filter(d => regions.some(r => r.id === d)).length > 0 && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedDestinations(prev => prev.filter(d => !regions.some(r => r.id === d)));
+                      }}
+                      className="mt-3 h-7 text-xs"
                     >
-                      {diff.label}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <Label className="text-sm font-semibold mb-3 block flex items-center gap-2">
-                  <Icon name="Calendar" size={16} />
-                  Дата начала
-                </Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button variant="outline" className="w-full justify-start">
-                      <Icon name="Calendar" className="mr-2" size={16} />
-                      {selectedDate ? format(selectedDate, 'dd MMM yyyy', { locale: ru }) : 'Выберите дату'}
+                      Очистить
                     </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={selectedDate}
-                      onSelect={setSelectedDate}
-                      disabled={(date) => date < new Date()}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
-            </div>
+                  )}
+                </CardContent>
+              )}
+            </Card>
 
-            <div>
-              <Label className="text-sm font-semibold mb-3 block flex items-center gap-2">
-                <Icon name="DollarSign" size={16} />
-                Бюджет: {priceRange[0].toLocaleString('ru-RU')} - {priceRange[1].toLocaleString('ru-RU')} ₽
-              </Label>
-              <Slider
-                min={0}
-                max={200000}
-                step={5000}
-                value={priceRange}
-                onValueChange={(value) => setPriceRange(value as [number, number])}
-                className="w-full"
-              />
-            </div>
+            <Card>
+              <CardHeader 
+                className="cursor-pointer hover:bg-secondary/50 transition-colors"
+                onClick={() => setShowCountriesSection(!showCountriesSection)}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Icon name="MapPin" size={20} className="text-primary" />
+                    <CardTitle className="text-base">Страны</CardTitle>
+                    {selectedDestinations.filter(d => countries.some(c => c.id === d)).length > 0 && (
+                      <Badge variant="secondary" className="ml-2">
+                        {selectedDestinations.filter(d => countries.some(c => c.id === d)).length}
+                      </Badge>
+                    )}
+                  </div>
+                  <Icon 
+                    name={showCountriesSection ? "ChevronUp" : "ChevronDown"} 
+                    size={20} 
+                    className="text-muted-foreground"
+                  />
+                </div>
+              </CardHeader>
+              {showCountriesSection && (
+                <CardContent>
+                  <div className="flex flex-wrap gap-2">
+                    {countries.map(country => (
+                      <Badge
+                        key={country.id}
+                        variant={selectedDestinations.includes(country.id) ? 'default' : 'outline'}
+                        className="cursor-pointer hover:shadow-md transition-all px-3 py-1.5 text-xs"
+                        onClick={() => toggleDestination(country.id)}
+                      >
+                        {country.label}
+                      </Badge>
+                    ))}
+                  </div>
+                  {selectedDestinations.filter(d => countries.some(c => c.id === d)).length > 0 && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedDestinations(prev => prev.filter(d => !countries.some(c => c.id === d)));
+                      }}
+                      className="mt-3 h-7 text-xs"
+                    >
+                      Очистить
+                    </Button>
+                  )}
+                </CardContent>
+              )}
+            </Card>
+
+            <Card>
+              <CardHeader 
+                className="cursor-pointer hover:bg-secondary/50 transition-colors"
+                onClick={() => setShowTypesSection(!showTypesSection)}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Icon name="Compass" size={20} className="text-primary" />
+                    <CardTitle className="text-base">Тип программы</CardTitle>
+                    {selectedTypes.length > 0 && (
+                      <Badge variant="secondary" className="ml-2">
+                        {selectedTypes.length}
+                      </Badge>
+                    )}
+                  </div>
+                  <Icon 
+                    name={showTypesSection ? "ChevronUp" : "ChevronDown"} 
+                    size={20} 
+                    className="text-muted-foreground"
+                  />
+                </div>
+              </CardHeader>
+              {showTypesSection && (
+                <CardContent>
+                  <div className="flex flex-wrap gap-2">
+                    {programTypes.map(type => (
+                      <Badge
+                        key={type.id}
+                        variant={selectedTypes.includes(type.id) ? 'default' : 'outline'}
+                        className="cursor-pointer hover:shadow-md transition-all px-4 py-2"
+                        onClick={() => toggleType(type.id)}
+                      >
+                        {type.label}
+                      </Badge>
+                    ))}
+                  </div>
+                  {selectedTypes.length > 0 && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedTypes([]);
+                      }}
+                      className="mt-3 h-7 text-xs"
+                    >
+                      Очистить
+                    </Button>
+                  )}
+                </CardContent>
+              )}
+            </Card>
+
+            <Card>
+              <CardHeader 
+                className="cursor-pointer hover:bg-secondary/50 transition-colors"
+                onClick={() => setShowDetailsSection(!showDetailsSection)}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Icon name="Settings" size={20} className="text-primary" />
+                    <CardTitle className="text-base">Параметры тура</CardTitle>
+                    {(selectedDurations.length > 0 || selectedDifficulties.length > 0 || selectedDate) && (
+                      <Badge variant="secondary" className="ml-2">
+                        {selectedDurations.length + selectedDifficulties.length + (selectedDate ? 1 : 0)}
+                      </Badge>
+                    )}
+                  </div>
+                  <Icon 
+                    name={showDetailsSection ? "ChevronUp" : "ChevronDown"} 
+                    size={20} 
+                    className="text-muted-foreground"
+                  />
+                </div>
+              </CardHeader>
+              {showDetailsSection && (
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label className="text-sm font-semibold mb-2 block flex items-center gap-2">
+                      <Icon name="Clock" size={16} />
+                      Длительность
+                    </Label>
+                    <div className="flex flex-wrap gap-2">
+                      {durations.map(dur => (
+                        <Badge
+                          key={dur.id}
+                          variant={selectedDurations.includes(dur.id) ? 'default' : 'outline'}
+                          className="cursor-pointer hover:shadow-md transition-all px-3 py-1.5"
+                          onClick={() => toggleDuration(dur.id)}
+                        >
+                          {dur.label}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label className="text-sm font-semibold mb-2 block flex items-center gap-2">
+                      <Icon name="TrendingUp" size={16} />
+                      Сложность
+                    </Label>
+                    <div className="flex flex-wrap gap-2">
+                      {difficulties.map(diff => (
+                        <Badge
+                          key={diff.id}
+                          variant={selectedDifficulties.includes(diff.id) ? 'default' : 'outline'}
+                          className="cursor-pointer hover:shadow-md transition-all px-3 py-1.5"
+                          onClick={() => toggleDifficulty(diff.id)}
+                        >
+                          {diff.label}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label className="text-sm font-semibold mb-2 block flex items-center gap-2">
+                      <Icon name="Calendar" size={16} />
+                      Дата начала
+                    </Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className="w-full justify-start">
+                          <Icon name="Calendar" className="mr-2" size={16} />
+                          {selectedDate ? format(selectedDate, 'dd MMM yyyy', { locale: ru }) : 'Выберите дату'}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={selectedDate}
+                          onSelect={setSelectedDate}
+                          disabled={(date) => date < new Date()}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+
+                  {(selectedDurations.length > 0 || selectedDifficulties.length > 0 || selectedDate) && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedDurations([]);
+                        setSelectedDifficulties([]);
+                        setSelectedDate(undefined);
+                      }}
+                      className="h-7 text-xs"
+                    >
+                      Очистить все
+                    </Button>
+                  )}
+                </CardContent>
+              )}
+            </Card>
+
+            <Card>
+              <CardHeader 
+                className="cursor-pointer hover:bg-secondary/50 transition-colors"
+                onClick={() => setShowPriceSection(!showPriceSection)}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Icon name="DollarSign" size={20} className="text-primary" />
+                    <CardTitle className="text-base">Бюджет</CardTitle>
+                    {(priceRange[0] !== 0 || priceRange[1] !== 200000) && (
+                      <Badge variant="secondary" className="ml-2 text-xs">
+                        {priceRange[0].toLocaleString('ru-RU')} - {priceRange[1].toLocaleString('ru-RU')} ₽
+                      </Badge>
+                    )}
+                  </div>
+                  <Icon 
+                    name={showPriceSection ? "ChevronUp" : "ChevronDown"} 
+                    size={20} 
+                    className="text-muted-foreground"
+                  />
+                </div>
+              </CardHeader>
+              {showPriceSection && (
+                <CardContent>
+                  <Label className="text-sm mb-3 block">
+                    {priceRange[0].toLocaleString('ru-RU')} - {priceRange[1].toLocaleString('ru-RU')} ₽
+                  </Label>
+                  <Slider
+                    min={0}
+                    max={200000}
+                    step={5000}
+                    value={priceRange}
+                    onValueChange={(value) => setPriceRange(value as [number, number])}
+                    className="w-full"
+                  />
+                  {(priceRange[0] !== 0 || priceRange[1] !== 200000) && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setPriceRange([0, 200000]);
+                      }}
+                      className="mt-3 h-7 text-xs"
+                    >
+                      Сбросить
+                    </Button>
+                  )}
+                </CardContent>
+              )}
+            </Card>
 
             <div className="flex items-center justify-between pt-4 border-t">
               <p className="text-sm text-muted-foreground">
